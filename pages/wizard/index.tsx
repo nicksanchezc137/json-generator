@@ -1,9 +1,10 @@
-import React, { ChangeEvent, FormEvent, useState } from "react";
+import React, { ChangeEvent, FormEvent, useRef, useState } from "react";
 import MainLayout from "../../components/MainLayout";
 import Input from "../../components/Input";
 import Button from "../../components/Button";
 import { useRouter } from "next/router";
 import {
+  CONFIG_FILE_PATH_KEY,
   DEFAULT_STORE,
   GeneralObject,
   saveInLocal,
@@ -12,6 +13,7 @@ import {
 export default function ModelSetup() {
   const router = useRouter();
   const [formData, setFormData] = useState<GeneralObject>();
+  const directoryInputRef = useRef<HTMLInputElement | null>(null);
   function onChange(event: ChangeEvent<HTMLInputElement>) {
     setFormData({ ...formData, [event.target.name]: event.target.value });
   }
@@ -22,8 +24,10 @@ export default function ModelSetup() {
     store.db.host = formData?.host;
     store.db.user = formData?.user;
     store.db.password = formData?.password;
+    store.projectName = formData?.projectName;
     saveInLocal(store);
-    router.push("/wizard/model-setup")
+    localStorage.setItem(CONFIG_FILE_PATH_KEY, formData?.path);
+    router.push("/wizard/model-setup");
   }
   return (
     <MainLayout>
@@ -39,6 +43,24 @@ export default function ModelSetup() {
             inputType="checkbox"
             onInputChange={onChange}
             inputLabel="Automatically Create the Database for me"
+          />
+          <Input
+            inputContainerClassName="w-full mt-10"
+            inputClassName="px-4 py-2 w-full text-[1.2rem]"
+            labelClassName="font-bold"
+            inputType="text"
+            inputName="projectName"
+            onInputChange={onChange}
+            inputLabel="Project Name"
+          />
+          <Input
+            inputContainerClassName="w-full mt-10"
+            inputClassName="px-4 py-2 w-full text-[1.2rem]"
+            labelClassName="font-bold"
+            inputType="text"
+            inputName="path"
+            onInputChange={onChange}
+            inputLabel="Project Path"
           />
           <Input
             inputContainerClassName="w-full mt-10"

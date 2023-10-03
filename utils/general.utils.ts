@@ -1,4 +1,5 @@
 const LOCAL_STORAGE_KEY = "NEXT_JSON_STORE";
+export const CONFIG_FILE_PATH_KEY = "CONFIG_FILE_PATH_KEY";
 export type GeneralObject = { [key: string]: any };
 export type Field = {
   name: string;
@@ -55,4 +56,31 @@ export function getFromLocal(): NEXT_JSON | null {//TODO:rename to getStoreFromL
 }
 export function saveInLocal(store: NEXT_JSON) {//TODO:rename to setStoreInLocal
   localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(store));
+}
+
+type GenericObject = { [key: string]: any };
+export function handleRequest(
+  path: string,
+  requestType: string,
+  body: GenericObject
+) {
+  return new Promise((resolve, reject) => {
+    let obj: GenericObject = {
+      method: requestType,
+      body: JSON.stringify(body),
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+    };
+    if (obj.method == "GET") {
+      delete obj.body;
+    }
+
+    //TODO: read url and port from config file
+    fetch(`http://localhost:3000/api/${path}`, obj)
+      .then((response) => response.json())
+      .then((result) => resolve(result))
+      .catch((error) => reject(error));
+  });
 }

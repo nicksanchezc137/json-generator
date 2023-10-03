@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import MainLayout from "../../components/MainLayout";
 import Button from "../../components/Button";
 import { useRouter } from "next/router";
-import { Model, NEXT_JSON, getFromLocal } from "../../utils/general.utils";
+import { CONFIG_FILE_PATH_KEY, Model, NEXT_JSON, getFromLocal, handleRequest } from "../../utils/general.utils";
 
 const TableRow = ({ name, fields, belongsTo }: Model) => {
   return (
@@ -27,7 +27,7 @@ const TableRow = ({ name, fields, belongsTo }: Model) => {
   );
 };
 export default function verify() {
-  const router = useRouter();
+  
   const [store, setStore] = useState<NEXT_JSON>();
   useEffect(() => {
     const store = getFromLocal();
@@ -35,6 +35,14 @@ export default function verify() {
       setStore(store);
     }
   }, []);
+ function  generateProject(){
+    handleRequest("/projects","POST",{
+      path:localStorage.getItem(CONFIG_FILE_PATH_KEY),
+      json:store
+    }).then((res)=>{
+      alert("Process complete...")
+    })
+  }
   return (
     <MainLayout>
       <div className="flex flex-col items-center min-h-[100vh] justify-start w-full">
@@ -52,7 +60,7 @@ export default function verify() {
         </table>
         <Button
           buttonClassName="self-end mt-7"
-          onButtonClick={() => router.push("/wizard/verify")}
+          onButtonClick={() => generateProject()}
           caption="Generate Project"
         />
       </div>
