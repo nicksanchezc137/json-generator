@@ -13,10 +13,10 @@ export type Model = {
   belongsTo: string[];
   fields: Field[];
   operations: {
-    create: boolean;
-    read: boolean;
-    update: boolean;
-    delete: boolean;
+    CREATE: boolean;
+    READ: boolean;
+    UPDATE: boolean;
+    DELETE: boolean;
   };
 };
 export type NEXT_JSON = {
@@ -41,8 +41,16 @@ export const DEFAULT_STORE: NEXT_JSON = {
   dropTables: true,
   models: [],
 };
+export const DEFAULT_MODEL_INFO = {
+  name: "",
+  operations: { CREATE: true, READ: true, UPDATE: true, DELETE: true },
+  fields: [],
+  includeTimeStamps: true,
+  belongsTo: [],
+};
 
-export function getFromLocal(): NEXT_JSON | null {//TODO:rename to getStoreFromLocal
+export function getFromLocal(): NEXT_JSON | null {
+  //TODO:rename to getStoreFromLocal
   try {
     const store = localStorage.getItem(LOCAL_STORAGE_KEY);
     if (store) {
@@ -54,7 +62,8 @@ export function getFromLocal(): NEXT_JSON | null {//TODO:rename to getStoreFromL
     return null;
   }
 }
-export function saveInLocal(store: NEXT_JSON) {//TODO:rename to setStoreInLocal
+export function saveInLocal(store: NEXT_JSON) {
+  //TODO:rename to setStoreInLocal
   localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(store));
 }
 
@@ -77,7 +86,7 @@ export function handleRequest(
       delete obj.body;
     }
 
-    //TODO: read url and port from config file
+    //TODO: READ url and port from config file
     fetch(`http://localhost:3000/api/${path}`, obj)
       .then((response) => response.json())
       .then((result) => resolve(result))

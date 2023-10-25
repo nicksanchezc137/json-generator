@@ -4,21 +4,12 @@ import Input from "../../components/Input";
 import Button from "../../components/Button";
 import { useRouter } from "next/router";
 import {
+  DEFAULT_MODEL_INFO,
   Field,
   Model,
   getFromLocal,
   saveInLocal,
 } from "../../utils/general.utils";
-
-//type FieldInfo = { name: string; isAlias: boolean; type: string, visibleOnList:boolean };
-
-const DEFAULT_MODEL_INFO = {
-  name: "",
-  operations: { create: true, read: true, update: true, delete: true },
-  fields: [],
-  includeTimeStamps: true,
-  belongsTo: [],
-};
 
 function ModelRow({ name, fields, operations }: Model, index: number) {
   console.log(operations);
@@ -105,8 +96,8 @@ export default function start() {
               inputClassName="px-4 py-2 w-full text-[1.2rem]"
               labelClassName="font-bold"
               inputType="checkbox"
-              checked={modelInfo.operations.create}
-              inputName="create"
+              checked={modelInfo.operations.CREATE}
+              inputName="CREATE"
               onInputChange={handleModelCheckbox}
               inputLabel="Create"
             />
@@ -115,8 +106,8 @@ export default function start() {
               inputClassName="px-4 py-2 w-full text-[1.2rem]"
               labelClassName="font-bold"
               inputType="checkbox"
-              checked={modelInfo.operations.read}
-              inputName="read"
+              checked={modelInfo.operations.READ}
+              inputName="READ"
               onInputChange={handleModelCheckbox}
               inputLabel="Read"
             />
@@ -125,8 +116,8 @@ export default function start() {
               inputClassName="px-4 py-2 w-full text-[1.2rem]"
               labelClassName="font-bold"
               inputType="checkbox"
-              checked={modelInfo.operations.update}
-              inputName="update"
+              checked={modelInfo.operations.UPDATE}
+              inputName="UPDATE"
               onInputChange={handleModelCheckbox}
               inputLabel="Update"
             />
@@ -135,8 +126,8 @@ export default function start() {
               inputClassName="px-4 py-2 w-full text-[1.2rem]"
               labelClassName="font-bold"
               inputType="checkbox"
-              checked={modelInfo.operations.delete}
-              inputName="delete"
+              checked={modelInfo.operations.DELETE}
+              inputName="DELETE"
               onInputChange={handleModelCheckbox}
               inputLabel="Delete"
             />
