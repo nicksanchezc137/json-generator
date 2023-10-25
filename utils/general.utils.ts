@@ -1,3 +1,5 @@
+import { MAIN_PORT } from "../constants/general.constants";
+
 const LOCAL_STORAGE_KEY = "NEXT_JSON_STORE";
 export const CONFIG_FILE_PATH_KEY = "CONFIG_FILE_PATH_KEY";
 export type GeneralObject = { [key: string]: any };
@@ -87,7 +89,7 @@ export function handleRequest(
     }
 
     //TODO: READ url and port from config file
-    fetch(`http://localhost:3000/api/${path}`, obj)
+    fetch(`http://localhost:${MAIN_PORT}/api/${path}`, obj)
       .then((response) => response.json())
       .then((result) => resolve(result))
       .catch((error) => reject(error));
