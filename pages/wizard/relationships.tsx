@@ -14,13 +14,7 @@ import MultiSelectInput, { Option } from "../../components/MultiSelectInput";
 
 //type FieldInfo = { name: string; isAlias: boolean; type: string, visibleOnList:boolean };
 
-const DEFAULT_MODEL_INFO = {
-  name: "",
-  operations: { create: true, read: true, update: true, delete: true },
-  fields: [],
-  includeTimeStamps: true,
-  belongsTo: [],
-};
+
 
 function ModelRow(
   models: Model[],
@@ -59,7 +53,8 @@ export default function start() {
     }
   }, []);
 
-  function onNext() {
+  function onNext(event:FormEvent) {
+    event.preventDefault();
     if (store) {
       saveInLocal(store);
       router.push("/wizard/verify");
