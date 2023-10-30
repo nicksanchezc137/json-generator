@@ -20,27 +20,46 @@ export default function handler(
 
     if (NEXT_JSON_DATA) {
       //generate the json file
-      fs.writeFile(`${project_path}/next-gen.json`, JSON.stringify(NEXT_JSON_DATA), (err: any) => {
-        if (err) {
-          return console.log(err);
+      fs.writeFile(
+        `${project_path}/next-gen.json`,
+        JSON.stringify(NEXT_JSON_DATA),
+        (err: any) => {
+          if (err) {
+            return console.log(err);
+          }
+          generateProject(project_path);
+          waitForResponse(res);
         }
-        generateProject(project_path);
-      });
+      );
     }
   }
-  res.status(200).json({ name: "John Doe" });
-}
 
-function generateProject(path: string) {
-  exec("next-gen generate", { cwd: path }, (error: any, stdout: any, stderr: any) => {
-    if (error) {
-      console.log(`error: ${error.message}`);
-      return;
-    }
-    if (stderr) {
-      console.log(`stderr: ${stderr}`);
-      return;
-    }
-    console.log(`stdout: ${stdout}`);
-  });
+  function waitForResponse(res: NextApiResponse<Data>) {
+    setTimeout(
+      () => {
+        res
+          .status(200)
+          .json({ name: "Project Generated. Access it through port 3000" });
+      },
+      1000 * 60 * 1
+    ); //TODO: Find a way to tell when process finishes
+  }
+
+  function generateProject(path: string) {
+    exec(
+      "next-gen generate",
+      { cwd: path },
+      (error: any, stdout: any, stderr: any) => {
+        if (error) {
+          console.log(`error: ${error.message}`);
+          return;
+        }
+        if (stderr) {
+          console.log(`stderr: ${stderr}`);
+          return;
+        }
+        console.log(`stdout: ${stdout}`);
+      }
+    );
+  }
 }
