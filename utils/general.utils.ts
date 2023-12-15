@@ -8,6 +8,7 @@ export type Field = {
   type: "text" | "number" | "date_time" | "long_text" | string;
   required: boolean;
   visibleOnList: boolean;
+  isIdentifier?: boolean;
 };
 export type Model = {
   name: string;
@@ -94,4 +95,27 @@ export function handleRequest(
       .then((result) => resolve(result))
       .catch((error) => reject(error));
   });
+}
+
+export function validateString(input: string): boolean {
+  if (!input) return false;
+  const regex: RegExp = /^[a-zA-Z0-9_\/-]+$/;
+  const sqlKeywords: string[] = [
+    "SELECT",
+    "FROM",
+    "WHERE",
+    "INSERT",
+    "UPDATE",
+    "DELETE",
+    "JOIN",
+    "AND",
+    "OR",
+    "NOT",
+    "IN",
+    "LIKE",
+  ];
+  return (
+    regex.test(input) &&
+    !sqlKeywords.some((keyword) => input.toUpperCase() == keyword)
+  );
 }

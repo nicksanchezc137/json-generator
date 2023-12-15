@@ -22,14 +22,14 @@ import React from "react";
   }) {
     return (
       <div className={`${selectContainerClassName || ""}`}>
-        <label className={`${labelClassName || ""} text-white`}>{label}</label>
+        <label className={`${labelClassName || ""} text-secondary`}>{label}</label>
         <select
           name={selectName}
           value={selectValue}
           onChange={onSelectChange}
           className={`${
             selectClassName || ""
-          } outline-none bg-[#5B8B6C] text-white`}
+          } outline-none bg-white text-secondary border border-gray rounded-sm`}
         >
           <option>Select</option>
           {options.map(({ label, value }) => (

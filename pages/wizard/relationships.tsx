@@ -14,8 +14,6 @@ import MultiSelectInput, { Option } from "../../components/MultiSelectInput";
 
 //type FieldInfo = { name: string; isAlias: boolean; type: string, visibleOnList:boolean };
 
-
-
 function ModelRow(
   models: Model[],
   { name, fields, operations }: Model,
@@ -79,9 +77,9 @@ export default function start() {
   }
   return (
     <MainLayout>
-      <div className="flex text-white flex-col items-center min-h-[100vh] justify-start w-full">
-        <form>
-          <h1 className="text-[2rem] font-bold mt-7 text-secondary">
+      <div className="flex text-secondary flex-col items-center min-h-[100vh] justify-start w-full">
+        <form className="bg-gray_x p-7 min-w-[44rem]">
+          <h1 className="text-[1.5rem] font-bold mt-7 text-secondary">
             Relationships Setup
           </h1>
 

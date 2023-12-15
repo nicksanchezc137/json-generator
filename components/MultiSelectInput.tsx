@@ -16,7 +16,7 @@ export default function MultiSelectInput({
     onChange(selectedList);
   }
   return (
-    <div>
+    <div className="w-[24rem]">
       <Multiselect
         options={options} // Options to display in the dropdown
         selectedValues={selectedValue} // Preselected value to persist in dropdown

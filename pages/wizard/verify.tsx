@@ -7,15 +7,15 @@ import { CONFIG_FILE_PATH_KEY, Model, NEXT_JSON, getFromLocal, handleRequest } f
 const TableRow = ({ name, fields, belongsTo }: Model) => {
   return (
     <tr>
-      <td className="border border-white h-auto p-5">{name}</td>
-      <td className="border border-white h-auto p-5">
+      <td className="border border-secondary h-auto p-5">{name}</td>
+      <td className="border border-secondary h-auto p-5">
         <ul className="flex flex-col flex-grow">
           {fields.map(({ name }) => (
             <li>{name}</li>
           ))}
         </ul>
       </td>
-      <td className="flex flex-col border border-white h-auto p-5">
+      <td className="flex flex-col border border-secondary h-auto p-5">
         {" "}
         <ul className="flex-grow">
           {belongsTo.map((modelName) => (
@@ -45,15 +45,15 @@ export default function verify() {
   }
   return (
     <MainLayout>
-      <div className="flex flex-col items-center min-h-[100vh] justify-start w-full">
-        <h1 className="text-[2rem] font-bold mt-7 text-white text-left block">Verify</h1>
+      <div className="flex flex-col items-start min-h-[100vh] justify-start w-full text-secondary">
+        <h1 className="text-[2rem] font-bold mt-7 text-left block">Verify</h1>
 
-        <table className="text-white w-full table-auto">
+        <table className="w-full table-auto">
           <thead>
             <tr>
-              <th className="text-left border border-white">Model</th>
-              <th className="text-left border border-white">Fields</th>
-              <th className="text-left border border-white">Belongs To</th>
+              <th className="text-left border border-gray">Model</th>
+              <th className="text-left border border-gray">Fields</th>
+              <th className="text-left border border-gray">Belongs To</th>
             </tr>
           </thead>
           <tbody>{store?.models.map((model) => TableRow(model))}</tbody>

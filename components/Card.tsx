@@ -8,8 +8,8 @@ export default function Card({
   content: string;
 }) {
   return (
-    <div className="w-1/2 mt-7 px-4">
-      <h3 className="font-bold text-[1.3rem] text-secondary">{title}</h3>
+    <div className="mt-7 py-4 text-secondary">
+      <h3 className="font-bold text-[1.3rem]">{title}</h3>
       <p className="">{content}</p>
     </div>
   );

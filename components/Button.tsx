@@ -15,8 +15,8 @@ import React, { MouseEventHandler } from "react";
       <button
         onClick={onButtonClick}
         className={`${buttonClassName || ""} ${
-          isLight ? "border border-white bg-[#5B8B6C] text-white" : "bg-white"
-        } max-w-[13rem] text-black px-10 py-2 rounded-full font-semibold tracking-tight`}
+          isLight ? "border border-white text-white" : "bg-blue"
+        } max-w-[13rem] text-black text-white px-10 py-2 rounded-sm font-semibold tracking-tight`}
       >
         {caption}
       </button>

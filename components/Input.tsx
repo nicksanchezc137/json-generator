@@ -32,7 +32,7 @@ export default function Input({
 }: InputProps) {
   return (
     <div className={inputContainerClassName}>
-      <label className={`text-white ${labelClassName || ""}`}>
+      <label className={`text-secondary ${labelClassName || ""}`}>
         {inputLabel || ""}
         {inputRequired ? "*" : ""}
       </label>
@@ -45,10 +45,10 @@ export default function Input({
         value = {submitValue || inputValue}
         className={`${inputClassName} ${
           inputType == "submit"
-            ? "max-w-[13rem] bg-white text-black px-10 py-2 rounded-full font-semibold tracking-tight"
+            ? "max-w-[13rem] bg-blue text-white px-10 py-2 rounded-sm font-semibold tracking-tight"
             : inputType == "checkbox"
-            ? "border-b border-[#A3BEAE] outline-none bg-[#5B8B6C] text-white placeholder-[#A3BEAE]"
-            : "border-b border-[#A3BEAE] outline-none bg-[#5B8B6C] text-white placeholder-[#A3BEAE]"
+            ? "border rounded-sm border-secondary outline-none  text-white placeholder-gray absolute left-0 mt-[.2rem] transform scale-200"
+            : "border rounded-sm border-secondary outline-none  text-secondary placeholder-gray"
         }`}
         {...props}
       />
