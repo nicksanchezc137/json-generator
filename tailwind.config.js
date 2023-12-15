@@ -9,8 +9,12 @@
         theme: {
           extend: {
             colors:{
-              "primary":"#5B8B6C",
-              "secondary":"#FFEECC"
+              "primary":"#fff",
+              "secondary":"#100D1B",
+              "blue":"#034CB9",
+              "gray":"#7A7A7A",
+              "gray_x":"#F5F5F5",
+              "red":"#F00"
             }
           },
         },
