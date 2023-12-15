@@ -1,4 +1,10 @@
-import React, { ChangeEvent, FormEvent, useRef, useState } from "react";
+import React, {
+  ChangeEvent,
+  FormEvent,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import MainLayout from "../../components/MainLayout";
 import Input from "../../components/Input";
 import Button from "../../components/Button";
@@ -7,6 +13,7 @@ import {
   CONFIG_FILE_PATH_KEY,
   DEFAULT_STORE,
   GeneralObject,
+  getStore,
   saveInLocal,
   validateString,
 } from "../../utils/general.utils";
@@ -19,9 +26,27 @@ export default function ModelSetup() {
   function onChange(event: ChangeEvent<HTMLInputElement>) {
     setFormData({ ...formData, [event.target.name]: event.target.value });
   }
+  useEffect(() => {
+    let store = getStore();
+    if (store) {
+      console.log(store);
+      const {
+        db: { database, host, user, password },
+        projectName,
+      } = store;
+      setFormData({
+        database,
+        host,
+        user,
+        password,
+        projectName,
+        path: localStorage.getItem(CONFIG_FILE_PATH_KEY),
+      });
+    }
+  }, []);
+
   function onSubmit(formEvent: FormEvent) {
     formEvent.preventDefault();
-    const store = DEFAULT_STORE;
     if (!validateValues()) {
       setContainsError(true);
       scrollToTop();
@@ -29,14 +54,19 @@ export default function ModelSetup() {
     } else {
       setContainsError(false);
     }
-    store.db.database = formData?.database;
-    store.db.host = formData?.host;
-    store.db.user = formData?.user;
-    store.db.password = formData?.password;
-    store.projectName = formData?.projectName;
-    saveInLocal(store);
-    localStorage.setItem(CONFIG_FILE_PATH_KEY, formData?.path);
-    router.push("/wizard/model-setup");
+    const store = getStore();
+    if (store) {
+      store.db.database = formData?.database;
+      store.db.host = formData?.host;
+      store.db.user = formData?.user;
+      store.db.password = formData?.password;
+      store.projectName = formData?.projectName;
+      saveInLocal(store);
+      localStorage.setItem(CONFIG_FILE_PATH_KEY, formData?.path);
+      router.push("/wizard/model-setup");
+    }else{
+      alert("An error occurred. Please reach us through Github Issues.")
+    }
   }
   function validateValues() {
     let isValid = true;
@@ -74,6 +104,7 @@ export default function ModelSetup() {
             inputClassName="px-4 py-2 w-full text-[1.2rem]"
             labelClassName="font-bold"
             inputType="text"
+            inputValue={formData?.projectName || ""}
             inputName="projectName"
             onInputChange={onChange}
             inputLabel="Project Name"
@@ -84,6 +115,7 @@ export default function ModelSetup() {
             labelClassName="font-bold"
             inputType="text"
             inputName="path"
+            inputValue={formData?.path || ""}
             onInputChange={onChange}
             inputLabel="Project Path"
           />
@@ -93,6 +125,7 @@ export default function ModelSetup() {
             labelClassName="font-bold"
             inputLabel="DB HOST"
             inputName="host"
+            inputValue={formData?.host || ""}
             onInputChange={onChange}
             inputPlaceholder="DB Host"
           />
@@ -102,6 +135,7 @@ export default function ModelSetup() {
             labelClassName="font-bold"
             inputLabel="Database"
             inputName="database"
+            inputValue={formData?.database || ""}
             onInputChange={onChange}
             inputPlaceholder="Database"
           />
@@ -111,6 +145,7 @@ export default function ModelSetup() {
             labelClassName="font-bold"
             inputType="text"
             inputName="user"
+            inputValue={formData?.user || ""}
             onInputChange={onChange}
             inputLabel="DB USERNAME"
             inputPlaceholder="DB USERNAME"
@@ -120,6 +155,7 @@ export default function ModelSetup() {
             inputClassName="px-4 py-2 w-full text-[1.2rem]"
             labelClassName="font-bold"
             inputType="password"
+            inputValue={formData?.password || ""}
             inputName="password"
             onInputChange={onChange}
             inputLabel="DB PASSWORD"

@@ -2,6 +2,7 @@ import React, {
   ChangeEvent,
   FormEvent,
   MouseEventHandler,
+  useEffect,
   useState,
 } from "react";
 import MainLayout from "../../components/MainLayout";
@@ -13,7 +14,7 @@ import {
   Field,
   GeneralObject,
   Model,
-  getFromLocal,
+  getStore,
   saveInLocal,
   validateString,
 } from "../../utils/general.utils";
@@ -54,6 +55,14 @@ export default function start() {
   const [containsError, setContainsError] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
   const [editedModelIndex, setEditedModelIndex] = useState(0);
+
+  useEffect(() => {
+    const store = getStore();
+    if (store) {
+      const { models } = store;
+      setModels(models);
+    }
+  }, []);
 
   function addModel() {
     if (isEdit) {
@@ -99,7 +108,7 @@ export default function start() {
   }
   function onNext() {
     if (!models.length) return;
-    let store = getFromLocal();
+    let store = getStore();
     if (store) {
       store.models = models;
       saveInLocal(store);

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import MainLayout from "../../components/MainLayout";
 import Button from "../../components/Button";
 import { useRouter } from "next/router";
-import { CONFIG_FILE_PATH_KEY, Model, NEXT_JSON, getFromLocal, handleRequest } from "../../utils/general.utils";
+import { CONFIG_FILE_PATH_KEY, Model, NEXT_JSON, getStore, handleRequest } from "../../utils/general.utils";
 
 const TableRow = ({ name, fields, belongsTo }: Model) => {
   return (
@@ -30,7 +30,7 @@ export default function verify() {
   
   const [store, setStore] = useState<NEXT_JSON>();
   useEffect(() => {
-    const store = getFromLocal();
+    const store = getStore();
     if (store) {
       setStore(store);
     }

@@ -13,7 +13,8 @@ import {
   Field,
   GeneralObject,
   NEXT_JSON,
-  getFromLocal,
+  getFieldsFromModels,
+  getStore,
   saveInLocal,
   validateString,
 } from "../../utils/general.utils";
@@ -66,7 +67,7 @@ function FieldHeader() {
     </li>
   );
 }
-type FieldInfo = {
+export type FieldInfo = {
   name: string;
   modelName: string;
   fieldType: string;
@@ -84,9 +85,11 @@ export default function start() {
   const [editedModelIndex, setEditedModelIndex] = useState(0);
 
   useEffect(() => {
-    const store = getFromLocal();
+    const store = getStore();
     if (store) {
       setStore(store);
+      const fields = getFieldsFromModels(store.models);
+      setFields(fields);
     }
   }, []);
   function addField() {
@@ -132,7 +135,8 @@ export default function start() {
     });
     return isValid;
   }
-  function onNext() {
+  function onNext(formEvent: FormEvent) {
+    formEvent.preventDefault();
     if (!fields.length) return;
     if (store) {
       const storeCopy = { ...store };
@@ -254,7 +258,7 @@ export default function start() {
             />
 
             <Input
-              inputValue={"Add Field"}
+              inputValue={"Save Field"}
               inputContainerClassName="w-full mt-10 cursor-pointer"
               inputType="submit"
             />

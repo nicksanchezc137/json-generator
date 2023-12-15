@@ -1,4 +1,5 @@
 import { MAIN_PORT } from "../constants/general.constants";
+import { FieldInfo } from "../pages/wizard/fields-setup";
 
 const LOCAL_STORAGE_KEY = "NEXT_JSON_STORE";
 export const CONFIG_FILE_PATH_KEY = "CONFIG_FILE_PATH_KEY";
@@ -52,14 +53,14 @@ export const DEFAULT_MODEL_INFO = {
   belongsTo: [],
 };
 
-export function getFromLocal(): NEXT_JSON | null {
+export function getStore(): NEXT_JSON | null {
   //TODO:rename to getStoreFromLocal
   try {
     const store = localStorage.getItem(LOCAL_STORAGE_KEY);
     if (store) {
       return JSON.parse(store);
     } else {
-      return null;
+      return DEFAULT_STORE;
     }
   } catch (error) {
     return null;
@@ -119,3 +120,23 @@ export function validateString(input: string): boolean {
     !sqlKeywords.some((keyword) => input.toUpperCase() == keyword)
   );
 }
+
+export function getFieldsFromModels(models: Model[]) {
+  let fields: FieldInfo[] = [];
+  models.forEach((model) => {
+    model.fields.forEach(
+      ({ name, isIdentifier, required, visibleOnList, type }) => {
+        fields.push({
+          name,
+          isIdentifier: isIdentifier ? "1" : "0",
+          required: required ? "1" : "0",
+          visibleOnList: visibleOnList ? "1" : "0",
+          modelName: model.name,
+          fieldType: type,
+        });
+      }
+    );
+  });
+  return fields;
+}
+

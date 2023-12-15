@@ -7,7 +7,7 @@ import {
   Field,
   Model,
   NEXT_JSON,
-  getFromLocal,
+  getStore,
   saveInLocal,
 } from "../../utils/general.utils";
 import MultiSelectInput, { Option } from "../../components/MultiSelectInput";
@@ -16,7 +16,7 @@ import MultiSelectInput, { Option } from "../../components/MultiSelectInput";
 
 function ModelRow(
   models: Model[],
-  { name, fields, operations }: Model,
+  { name, fields, operations, belongsTo }: Model,
   index: number,
   onChange: Function
 ) {
@@ -27,6 +27,9 @@ function ModelRow(
       <span>
         <MultiSelectInput
           onChange={onChange}
+          preselectedValues={belongsTo.map((modelName) => {
+            return { name: modelName, id: modelName };
+          })}
           options={models
             .filter((model) => model.name !== name)
             .map(({ name }) => {
@@ -45,13 +48,13 @@ export default function start() {
   const [store, setStore] = useState<NEXT_JSON>();
 
   useEffect(() => {
-    const store = getFromLocal();
+    const store = getStore();
     if (store) {
       setStore(store);
     }
   }, []);
 
-  function onNext(event:FormEvent) {
+  function onNext(event: FormEvent) {
     event.preventDefault();
     if (store) {
       saveInLocal(store);
@@ -83,9 +86,12 @@ export default function start() {
             Relationships Setup
           </h1>
 
-          <div className="flex justify-between w-full">
-            <h1 className="text-[1.5rem] text-secondary font-bold mt-[4rem]">
+          <div className="flex justify-start w-full">
+            <h1 className="text-[1.2rem] text-secondary font-bold mt-[4rem]">
               Models
+            </h1>
+            <h1 className="text-[1.2rem] ml-[30%] text-secondary font-bold mt-[4rem]">
+              Belongs To
             </h1>
           </div>
           <ul className="flex justify-between w-full flex-col mb-[2rem]">
