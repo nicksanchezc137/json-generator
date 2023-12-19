@@ -1,5 +1,6 @@
 import { MAIN_PORT } from "../constants/general.constants";
 import { FieldInfo } from "../pages/wizard/fields-setup";
+var pluralize = require("pluralize");
 
 const LOCAL_STORAGE_KEY = "NEXT_JSON_STORE";
 export const CONFIG_FILE_PATH_KEY = "CONFIG_FILE_PATH_KEY";
@@ -140,3 +141,10 @@ export function getFieldsFromModels(models: Model[]) {
   return fields;
 }
 
+export function hasMainIdentifier(modelName: string, models: Model[]): boolean {
+  return (
+    models
+      .find((model) => modelName == model.name)
+      ?.fields.some((field) => field.isIdentifier) || false
+  );
+}

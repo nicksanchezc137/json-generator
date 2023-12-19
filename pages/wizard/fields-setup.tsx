@@ -12,9 +12,11 @@ import { useRouter } from "next/router";
 import {
   Field,
   GeneralObject,
+  Model,
   NEXT_JSON,
   getFieldsFromModels,
   getStore,
+  hasMainIdentifier,
   saveInLocal,
   validateString,
 } from "../../utils/general.utils";
@@ -34,20 +36,24 @@ const FIELD_TYPES = [
   { label: "Number", value: "number" },
   { label: "Long Text", value: "long_text" },
 ];
+const IS_IDENTIFIER = {
+  yes: "1",
+  no: "0",
+};
 function FieldRow(
   { name, fieldType, modelName, required }: FieldInfo,
   index: number,
   onEditClick: MouseEventHandler<HTMLSpanElement>
 ) {
   return (
-    <li className="flex justify-between w-full text-secondary">
-      <span className="mr-5">{index + 1}.</span>
-      <span className="font-bold mr-7 w-[3rem]">{name}</span>
-      <span className="font-bold mr-7 w-[3rem]">{modelName}</span>
-      <span className="mr-5">{fieldType}</span>
-      <span className="mr-5">{required == "1" ? "Yes" : "No"}</span>
+    <li className="flex items-start  w-full text-secondary">
+      <span className="mr-5 w-[1rem]">{index + 1}.</span>
+      <span className="font-bold mr-7 w-[5rem] text-left">{name}</span>
+      <span className="font-bold mr-7 w-[5rem]">{modelName}</span>
+      <span className="mr-5 w-[4rem]">{fieldType}</span>
+      <span className="mr-5 w-[4rem]">{required == "1" ? "Yes" : "No"}</span>
       <span
-        className="underline text-secondary cursor-pointer"
+        className="underline text-secondary cursor-pointer w-[4rem]"
         onClick={onEditClick}
       >
         Edit
@@ -57,13 +63,15 @@ function FieldRow(
 }
 function FieldHeader() {
   return (
-    <li className="flex justify-between w-full text-secondary">
-      <span className="mr-5">#</span>
-      <span className="font-bold mr-7 w-[3rem]">Name</span>
-      <span className="font-bold mr-7 w-[3rem]">Model</span>
-      <span className="mr-5">Type</span>
-      <span className="mr-5">Required</span>
-      <span className="underline text-secondary cursor-pointer">Action</span>
+    <li className="flex items-start w-full text-secondary">
+      <span className="mr-5 w-[1rem]">#</span>
+      <span className="font-bold mr-7 w-[5rem]">Name</span>
+      <span className="font-bold mr-7 w-[5rem]">Model</span>
+      <span className="mr-5 w-[4rem]">Type</span>
+      <span className="mr-5 w-[4rem]">Required</span>
+      <span className="underline text-secondary cursor-pointer w-[4rem]">
+        Action
+      </span>
     </li>
   );
 }
@@ -83,6 +91,7 @@ export default function start() {
   const [containsError, setContainsError] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
   const [editedModelIndex, setEditedModelIndex] = useState(0);
+  const [showIsIdentifierField, setShowIsIdentifierField] = useState(true);
 
   useEffect(() => {
     const store = getStore();
@@ -113,6 +122,20 @@ export default function start() {
       behavior: "smooth",
     });
   };
+  useEffect(() => {
+    if (isEdit && fieldInfo.isIdentifier == IS_IDENTIFIER.yes) {
+      setShowIsIdentifierField(true);
+    } else if (
+      (isEdit && !fieldInfo.isIdentifier) ||
+      fieldInfo.isIdentifier == IS_IDENTIFIER.no
+    ) {
+      setShowIsIdentifierField(false);
+    } else {
+      setShowIsIdentifierField(
+        !hasMainIdentifier(fieldInfo.modelName, store?.models || [])
+      );
+    }
+  }, [fieldInfo.modelName, fieldInfo.name]);
 
   function onSubmit(formEvent: FormEvent) {
     formEvent.preventDefault();
@@ -133,11 +156,31 @@ export default function start() {
         isValid = false;
       }
     });
+
     return isValid;
+  }
+  function modelHasIdentifier(model: Model, models: Model[]) {
+    let hasIdentifier = false;
+    model.fields.forEach((field) => {
+      if (hasMainIdentifier(model.name, models)) {
+        hasIdentifier = true;
+      }
+    });
+    return hasIdentifier;
+  }
+  function validateHasIdentifier(models: Model[]) {
+    let invalidModelNames: string[] = [];
+    models.forEach((model) => {
+      if (!modelHasIdentifier(model, models)) {
+        invalidModelNames.push(model.name);
+      }
+    });
+    return invalidModelNames;
   }
   function onNext(formEvent: FormEvent) {
     formEvent.preventDefault();
     if (!fields.length) return;
+
     if (store) {
       const storeCopy = { ...store };
       storeCopy.models = storeCopy.models.map((model) => {
@@ -149,13 +192,22 @@ export default function start() {
               required: field.required == "1",
               visibleOnList: field.visibleOnList == "1", //TODO:add to form
               type: field.fieldType,
-              isIdentifier: field.isIdentifier == "1",
+              isIdentifier: field.isIdentifier == IS_IDENTIFIER.yes,
             };
 
             return fieldTemplate;
           });
         return model;
       });
+      let invalidModelNames = validateHasIdentifier(storeCopy.models);
+      if (invalidModelNames.length) {
+        alert(
+          `Missing main identifier(s) for the model(s) ${invalidModelNames.join(
+            ","
+          )}.`
+        );
+        return;
+      }
       saveInLocal(storeCopy);
       router.push("/wizard/relationships");
     }
@@ -230,19 +282,21 @@ export default function start() {
               ]}
             />
 
-            <Select
-              labelClassName="font-bold"
-              selectContainerClassName="w-full mt-10"
-              selectClassName="px-4 py-2 w-full text-[1.2rem]"
-              label="Is Identifier"
-              selectValue={fieldInfo.isIdentifier}
-              onSelectChange={handleChange}
-              selectName="isIdentifier"
-              options={[
-                { label: "Yes", value: "1" },
-                { label: "No", value: "0" },
-              ]}
-            />
+            {showIsIdentifierField ? (
+              <Select
+                labelClassName="font-bold"
+                selectContainerClassName="w-full mt-10"
+                selectClassName="px-4 py-2 w-full text-[1.2rem]"
+                label="Is Identifier"
+                selectValue={fieldInfo.isIdentifier}
+                onSelectChange={handleChange}
+                selectName="isIdentifier"
+                options={[
+                  { label: "Yes", value: IS_IDENTIFIER.yes },
+                  { label: "No", value: IS_IDENTIFIER.no },
+                ]}
+              />
+            ) : null}
             <Select
               labelClassName="font-bold"
               selectContainerClassName="w-full mt-10"

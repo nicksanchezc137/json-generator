@@ -131,7 +131,7 @@ export default function start() {
             </h1>
             {containsError ? (
               <h4 className="text-red w-[22rem]">
-                Input contains spaces, non-alphanumeric characters (except
+                Model name contains spaces, is not a plural, non-alphanumeric characters (except
                 underscores), starts with a number, or includes SQL keywords.
               </h4>
             ) : null}
