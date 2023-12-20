@@ -11,7 +11,7 @@ export default function Home() {
   return (
     <MainLayout>
       <div className="flex items-start justify-start flex-col w-full min-h-[100vh] text-secondary">
-        <h1 className="text-[2.5rem] font-bold mt-3">Welcome to Next-Gen</h1>
+        <h1 className="text-[2.5rem] font-bold mt-3">Welcome to Next-Gen CMS</h1>
 
         <h2 className="font-bold text-[1.6rem]">
           Speed up development time by using Next-Gen{" "}
