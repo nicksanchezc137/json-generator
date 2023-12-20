@@ -179,7 +179,9 @@ export default function start() {
   }
   function onNext(formEvent: FormEvent) {
     formEvent.preventDefault();
-    if (!fields.length) return;
+    if (!fields.length) {
+      alert("Fields missing.");
+    }
 
     if (store) {
       const storeCopy = { ...store };
