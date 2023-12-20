@@ -67,6 +67,9 @@ export function getStore(): NEXT_JSON | null {
     return null;
   }
 }
+export function clearStore() {
+  localStorage.clear();
+}
 export function saveInLocal(store: NEXT_JSON) {
   //TODO:rename to setStoreInLocal
   localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(store));
