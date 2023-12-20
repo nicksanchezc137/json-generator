@@ -132,10 +132,17 @@ export default function start() {
       setShowIsIdentifierField(false);
     } else {
       setShowIsIdentifierField(
-        !hasMainIdentifier(fieldInfo.modelName, store?.models || [])
+        !mainIdentifierAdded(fieldInfo.modelName)
       );
     }
   }, [fieldInfo.modelName, fieldInfo.name]);
+
+  function mainIdentifierAdded(modelName: string) {
+    return fields.some(
+      (field) =>
+        field.modelName == modelName && field.isIdentifier == IS_IDENTIFIER.yes
+    );
+  }
 
   function onSubmit(formEvent: FormEvent) {
     formEvent.preventDefault();
@@ -151,12 +158,9 @@ export default function start() {
   function validateValues() {
     let isValid = true;
     let formObj: GeneralObject = fieldInfo || {};
-    Object.keys(formObj).forEach((key) => {
-      if (!validateString(formObj[key])) {
+      if (!validateString(formObj["name"])) {
         isValid = false;
       }
-    });
-
     return isValid;
   }
   function modelHasIdentifier(model: Model, models: Model[]) {

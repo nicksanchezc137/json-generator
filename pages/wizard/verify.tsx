@@ -40,7 +40,7 @@ export default function verify() {
       path:localStorage.getItem(CONFIG_FILE_PATH_KEY),
       json:store
     }).then((res)=>{
-      alert("Process complete...")
+      alert(`Generation complete. To get started run cd ${localStorage.getItem(CONFIG_FILE_PATH_KEY)}/${getStore()?.projectName} && npm run dev`)
     })
   }
   return (

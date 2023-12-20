@@ -14,9 +14,11 @@ import {
   DEFAULT_STORE,
   GeneralObject,
   getStore,
+  handleRequest,
   saveInLocal,
   validateString,
 } from "../../utils/general.utils";
+import { testConnection } from "../../utils/db.utils";
 
 export default function ModelSetup() {
   const router = useRouter();
@@ -54,19 +56,37 @@ export default function ModelSetup() {
     } else {
       setContainsError(false);
     }
-    const store = getStore();
-    if (store) {
-      store.db.database = formData?.database;
-      store.db.host = formData?.host;
-      store.db.user = formData?.user;
-      store.db.password = formData?.password;
-      store.projectName = formData?.projectName;
-      saveInLocal(store);
-      localStorage.setItem(CONFIG_FILE_PATH_KEY, formData?.path);
-      router.push("/wizard/model-setup");
-    }else{
-      alert("An error occurred. Please reach us through Github Issues.")
-    }
+    testDBConnection()
+      .then((res:any) => {
+        if (res.name === "Connection Successful") {
+          const store = getStore();
+          if (store) {
+            store.db.database = formData?.database;
+            store.db.host = formData?.host;
+            store.db.user = formData?.user;
+            store.db.password = formData?.password;
+            store.projectName = formData?.projectName;
+            saveInLocal(store);
+            localStorage.setItem(CONFIG_FILE_PATH_KEY, formData?.path);
+            router.push("/wizard/model-setup");
+          } else {
+            alert("An error occurred. Please reach us through Github Issues.");
+          }
+        } else {
+          alert("Unable to establish DB connection.");
+        }
+      })
+      .catch((err) => {
+        alert("Unable to establish DB connection.");
+      });
+  }
+  function testDBConnection() {
+    return handleRequest("/tests", "POST", {
+      host: formData?.host,
+      user: formData?.user,
+      password: formData?.password,
+      database: formData?.database,
+    });
   }
   function validateValues() {
     let isValid = true;
