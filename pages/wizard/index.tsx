@@ -20,7 +20,7 @@ import {
 } from "../../utils/general.utils";
 import { testConnection } from "../../utils/db.utils";
 
-export default function ModelSetup() {
+export default function ModelSetup(projectDetails: { projectPath: string }) {
   const router = useRouter();
   const [formData, setFormData] = useState<GeneralObject>();
   const [containsError, setContainsError] = useState(false);
@@ -31,7 +31,6 @@ export default function ModelSetup() {
   useEffect(() => {
     let store = getStore();
     if (store) {
-      console.log(store);
       const {
         db: { database, host, user, password },
         projectName,
@@ -42,9 +41,10 @@ export default function ModelSetup() {
         user,
         password,
         projectName,
-        path: localStorage.getItem(CONFIG_FILE_PATH_KEY),
+        // path: localStorage.getItem(CONFIG_FILE_PATH_KEY),
       });
     }
+    console.log(projectDetails)
   }, []);
 
   function onSubmit(formEvent: FormEvent) {
@@ -57,7 +57,7 @@ export default function ModelSetup() {
       setContainsError(false);
     }
     testDBConnection()
-      .then((res:any) => {
+      .then((res: any) => {
         if (res.name === "Connection Successful") {
           const store = getStore();
           if (store) {
@@ -67,7 +67,10 @@ export default function ModelSetup() {
             store.db.password = formData?.password;
             store.projectName = formData?.projectName;
             saveInLocal(store);
-            localStorage.setItem(CONFIG_FILE_PATH_KEY, formData?.path);
+            localStorage.setItem(
+              CONFIG_FILE_PATH_KEY,
+              projectDetails.projectPath
+            );
             router.push("/wizard/model-setup");
           } else {
             alert("An error occurred. Please reach us through Github Issues.");
@@ -129,7 +132,7 @@ export default function ModelSetup() {
             onInputChange={onChange}
             inputLabel="Project Name"
           />
-          <Input
+          {/* <Input
             inputContainerClassName="w-full mt-10"
             inputClassName="px-4 py-2 w-full text-[1.2rem]"
             labelClassName="font-bold"
@@ -138,7 +141,7 @@ export default function ModelSetup() {
             inputValue={formData?.path || ""}
             onInputChange={onChange}
             inputLabel="Project Path"
-          />
+          /> */}
           <Input
             inputContainerClassName="w-full mt-10"
             inputClassName="px-4 py-2 w-full text-[1.2rem]"
@@ -191,3 +194,12 @@ export default function ModelSetup() {
     </MainLayout>
   );
 }
+
+export const getServerSideProps = async (content: any) => {
+  const projectDetails = await handleRequest(`projects`, "GET", {});
+  return {
+    props: {
+      projectDetails,
+    },
+  };
+};

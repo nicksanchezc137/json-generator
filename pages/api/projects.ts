@@ -4,15 +4,12 @@ import { NEXT_JSON } from "../../utils/general.utils";
 const { exec } = require("child_process");
 const fs = require("fs");
 const prettier = require("prettier");
-import path from "path";
+const JSON_GENERATOR_FOLDER_NAME = "json-generator";
 
-type Data = {
-  name: string;
-};
 
 export default function handler(
   req: NextApiRequest,
-  res: NextApiResponse<Data>
+  res: NextApiResponse
 ) {
   if (req.method == "POST") {
     let NEXT_JSON_DATA: NEXT_JSON = req.body.json;
@@ -32,9 +29,18 @@ export default function handler(
         }
       );
     }
+  } else if (req.method == "GET") {
+    const currentWorkingDirectory = process.cwd();
+
+    const projectDetails = {
+      projectPath: currentWorkingDirectory.split(JSON_GENERATOR_FOLDER_NAME)[0],
+    };
+    res
+    .status(200)
+    .json(projectDetails);
   }
 
-  function waitForResponse(res: NextApiResponse<Data>) {
+  function waitForResponse(res: NextApiResponse) {
     setTimeout(
       () => {
         res
