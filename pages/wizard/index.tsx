@@ -44,12 +44,11 @@ export default function ModelSetup(projectDetails: { projectPath: string }) {
         // path: localStorage.getItem(CONFIG_FILE_PATH_KEY),
       });
     }
-    console.log(projectDetails)
   }, []);
 
   function onSubmit(formEvent: FormEvent) {
     formEvent.preventDefault();
-    if (!validateValues()) {
+    if (!validateValues(["host"])) {
       setContainsError(true);
       scrollToTop();
       return;
@@ -67,6 +66,7 @@ export default function ModelSetup(projectDetails: { projectPath: string }) {
             store.db.password = formData?.password;
             store.projectName = formData?.projectName;
             saveInLocal(store);
+            console.log(projectDetails);
             localStorage.setItem(
               CONFIG_FILE_PATH_KEY,
               projectDetails.projectPath
@@ -91,14 +91,16 @@ export default function ModelSetup(projectDetails: { projectPath: string }) {
       database: formData?.database,
     });
   }
-  function validateValues() {
+  function validateValues(exclude: string[]) {
     let isValid = true;
     let formObj = formData || {};
-    Object.keys(formObj).forEach((key) => {
-      if (!validateString(formObj[key])) {
-        isValid = false;
-      }
-    });
+    Object.keys(formObj)
+      .filter((key) => !exclude.includes(key))
+      .forEach((key) => {
+        if (!validateString(formObj[key])) {
+          isValid = false;
+        }
+      });
     return isValid;
   }
 
@@ -196,10 +198,10 @@ export default function ModelSetup(projectDetails: { projectPath: string }) {
 }
 
 export const getServerSideProps = async (content: any) => {
-  const projectDetails = await handleRequest(`projects`, "GET", {});
+  const projectDetails:any = await handleRequest(`projects`, "GET", {});
   return {
     props: {
-      projectDetails,
+      projectPath:projectDetails?.projectPath,
     },
   };
 };

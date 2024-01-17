@@ -2,7 +2,13 @@ import React, { useEffect, useState } from "react";
 import MainLayout from "../../components/MainLayout";
 import Button from "../../components/Button";
 import { useRouter } from "next/router";
-import { CONFIG_FILE_PATH_KEY, Model, NEXT_JSON, getStore, handleRequest } from "../../utils/general.utils";
+import {
+  CONFIG_FILE_PATH_KEY,
+  Model,
+  NEXT_JSON,
+  getStore,
+  handleRequest,
+} from "../../utils/general.utils";
 
 const TableRow = ({ name, fields, belongsTo }: Model) => {
   return (
@@ -18,16 +24,15 @@ const TableRow = ({ name, fields, belongsTo }: Model) => {
       <td className="flex flex-col border border-secondary h-auto p-5">
         {" "}
         <ul className="flex-grow">
-          {belongsTo.map((modelName) => (
-            <li>{modelName}</li>
-          ))}
+          {belongsTo.length
+            ? belongsTo.map((modelName) => <li>{modelName}</li>)
+            : (<br/>)}
         </ul>
       </td>
     </tr>
   );
 };
 export default function verify() {
-  
   const [store, setStore] = useState<NEXT_JSON>();
   useEffect(() => {
     const store = getStore();
@@ -35,13 +40,17 @@ export default function verify() {
       setStore(store);
     }
   }, []);
- function  generateProject(){
-    handleRequest("/projects","POST",{
-      path:localStorage.getItem(CONFIG_FILE_PATH_KEY),
-      json:store
-    }).then((res)=>{
-      alert(`Generation complete. To get started run cd ${localStorage.getItem(CONFIG_FILE_PATH_KEY)}/${getStore()?.projectName} && npm run dev`)
-    })
+  function generateProject() {
+    handleRequest("/projects", "POST", {
+      path: localStorage.getItem(CONFIG_FILE_PATH_KEY),
+      json: store,
+    }).then((res) => {
+      alert(
+        `Generation complete. To get started run cd ${localStorage.getItem(
+          CONFIG_FILE_PATH_KEY
+        )}/${getStore()?.projectName} && npm run dev`
+      );
+    });
   }
   return (
     <MainLayout>

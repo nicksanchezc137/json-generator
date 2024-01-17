@@ -6,11 +6,7 @@ const fs = require("fs");
 const prettier = require("prettier");
 const JSON_GENERATOR_FOLDER_NAME = "json-generator";
 
-
-export default function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
+export default function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method == "POST") {
     let NEXT_JSON_DATA: NEXT_JSON = req.body.json;
     let project_path = req.body.path;
@@ -32,12 +28,13 @@ export default function handler(
   } else if (req.method == "GET") {
     const currentWorkingDirectory = process.cwd();
 
-    const projectDetails = {
-      projectPath: currentWorkingDirectory.split(JSON_GENERATOR_FOLDER_NAME)[0],
-    };
     res
-    .status(200)
-    .json(projectDetails);
+      .status(200)
+      .json({
+        projectPath: currentWorkingDirectory.split(
+          JSON_GENERATOR_FOLDER_NAME
+        )[0],
+      });
   }
 
   function waitForResponse(res: NextApiResponse) {

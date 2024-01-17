@@ -24,7 +24,6 @@ function ModelRow(
   index: number,
   onEditClick: MouseEventHandler<HTMLSpanElement>
 ) {
-  console.log(operations);
   return (
     <li className="flex justify-between w-full text-secondary">
       <span className="mr-5">{index + 1}.</span>
