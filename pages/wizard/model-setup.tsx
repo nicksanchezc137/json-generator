@@ -16,6 +16,7 @@ import {
   Model,
   getStore,
   saveInLocal,
+  trimString,
   validateString,
 } from "../../utils/general.utils";
 
@@ -27,7 +28,7 @@ function ModelRow(
   return (
     <li className="flex justify-between w-full text-secondary">
       <span className="mr-5">{index + 1}.</span>
-      <span className="font-bold mr-7 w-[3rem]">{name}</span>
+      <span className="font-bold mr-7 w-[3rem]">{trimString(name,9)}</span>
       <span className="mr-5">
         {Object.keys(operations)
           .map(

@@ -18,6 +18,7 @@ import {
   getStore,
   hasMainIdentifier,
   saveInLocal,
+  trimString,
   validateString,
 } from "../../utils/general.utils";
 import Select from "../../components/Select";
@@ -48,8 +49,12 @@ function FieldRow(
   return (
     <li className="flex items-start  w-full text-secondary">
       <span className="mr-5 w-[1rem]">{index + 1}.</span>
-      <span className="font-bold mr-7 w-[5rem] text-left">{name}</span>
-      <span className="font-bold mr-7 w-[5rem]">{modelName}</span>
+      <span className="font-bold mr-7 w-[5rem] text-left">
+        {trimString(name, 12)}
+      </span>
+      <span className="font-bold mr-7 w-[5rem]">
+        {trimString(modelName, 12)}
+      </span>
       <span className="mr-5 w-[4rem]">{fieldType}</span>
       <span className="mr-5 w-[4rem]">{required == "1" ? "Yes" : "No"}</span>
       <span
@@ -131,9 +136,7 @@ export default function start() {
     ) {
       setShowIsIdentifierField(false);
     } else {
-      setShowIsIdentifierField(
-        !mainIdentifierAdded(fieldInfo.modelName)
-      );
+      setShowIsIdentifierField(!mainIdentifierAdded(fieldInfo.modelName));
     }
   }, [fieldInfo.modelName, fieldInfo.name]);
 
@@ -158,9 +161,9 @@ export default function start() {
   function validateValues() {
     let isValid = true;
     let formObj: GeneralObject = fieldInfo || {};
-      if (!validateString(formObj["name"])) {
-        isValid = false;
-      }
+    if (!validateString(formObj["name"])) {
+      isValid = false;
+    }
     return isValid;
   }
   function modelHasIdentifier(model: Model, models: Model[]) {

@@ -104,7 +104,7 @@ export function handleRequest(
 
 export function validateString(input: string): boolean {
   if (!input) return false;
-  const regex: RegExp = /^[a-zA-Z0-9_\/-]+$/;
+  const regex: RegExp = /^[a-zA-Z0-9_\/]+$/;
   const sqlKeywords: string[] = [
     "SELECT",
     "FROM",
@@ -150,4 +150,10 @@ export function hasMainIdentifier(modelName: string, models: Model[]): boolean {
       .find((model) => modelName == model.name)
       ?.fields.some((field) => field.isIdentifier) || false
   );
+}
+
+export function trimString(string: string, maxLength: number) {
+  return string.length > maxLength
+    ? `${string.substring(0, maxLength)}...`
+    : string;
 }
