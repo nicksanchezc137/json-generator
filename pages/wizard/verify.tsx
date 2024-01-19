@@ -24,9 +24,11 @@ const TableRow = ({ name, fields, belongsTo }: Model) => {
       <td className="flex flex-col border border-secondary h-auto p-5">
         {" "}
         <ul className="flex-grow">
-          {belongsTo.length
-            ? belongsTo.map((modelName) => <li>{modelName}</li>)
-            : (<br/>)}
+          {belongsTo.length ? (
+            belongsTo.map((modelName) => <li>{modelName}</li>)
+          ) : (
+            <br />
+          )}
         </ul>
       </td>
     </tr>
@@ -34,6 +36,7 @@ const TableRow = ({ name, fields, belongsTo }: Model) => {
 };
 export default function verify() {
   const [store, setStore] = useState<NEXT_JSON>();
+  const [loading, setLoading] = useState(false);
   useEffect(() => {
     const store = getStore();
     if (store) {
@@ -41,16 +44,20 @@ export default function verify() {
     }
   }, []);
   function generateProject() {
+    setLoading(true);
     handleRequest("/projects", "POST", {
       path: localStorage.getItem(CONFIG_FILE_PATH_KEY),
       json: store,
-    }).then((res) => {
-      alert(
-        `Generation complete. To get started run cd ${localStorage.getItem(
-          CONFIG_FILE_PATH_KEY
-        )}/${getStore()?.projectName} && npm run dev`
-      );
-    });
+    })
+      .then((res) => {
+        alert(
+          `Generation complete. To get started run cd ${localStorage.getItem(
+            CONFIG_FILE_PATH_KEY
+          )}/${getStore()?.projectName} && npm run dev`
+        );
+      })
+      .catch((err) => alert("An error occurred generating the project"))
+      .finally(() => setLoading(false));
   }
   return (
     <MainLayout>
@@ -68,6 +75,7 @@ export default function verify() {
           <tbody>{store?.models.map((model) => TableRow(model))}</tbody>
         </table>
         <Button
+          loading={loading}
           buttonClassName="self-end mt-7"
           onButtonClick={() => generateProject()}
           caption="Generate Project"
