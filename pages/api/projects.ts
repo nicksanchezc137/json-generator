@@ -5,11 +5,12 @@ const { exec } = require("child_process");
 const fs = require("fs");
 const prettier = require("prettier");
 const JSON_GENERATOR_FOLDER_NAME = "json-generator";
+const os = require("os");
 
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method == "POST") {
     let NEXT_JSON_DATA: NEXT_JSON = req.body.json;
-    let project_path = req.body.path;
+    let project_path =getPlatformPath(req.body.path);
 
     if (NEXT_JSON_DATA) {
       //generate the json file
@@ -28,13 +29,9 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
   } else if (req.method == "GET") {
     const currentWorkingDirectory = process.cwd();
 
-    res
-      .status(200)
-      .json({
-        projectPath: currentWorkingDirectory.split(
-          JSON_GENERATOR_FOLDER_NAME
-        )[0],
-      });
+    res.status(200).json({
+      projectPath: currentWorkingDirectory.split(JSON_GENERATOR_FOLDER_NAME)[0],
+    });
   }
 
   function waitForResponse(res: NextApiResponse) {
@@ -64,5 +61,13 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
         console.log(`stdout: ${stdout}`);
       }
     );
+  }
+}
+
+function getPlatformPath(path: string) {
+  if (os.platform() === "win32") {
+    return path.replace(/\//g, "\\");
+  } else {
+    return path;
   }
 }
