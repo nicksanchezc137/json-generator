@@ -48,7 +48,7 @@ export default function ModelSetup(projectDetails: { projectPath: string }) {
 
   function onSubmit(formEvent: FormEvent) {
     formEvent.preventDefault();
-    if (!validateValues(["host","user","password"])) {
+    if (!validateValues(["host","user","password","database"])) {
       setContainsError(true);
       scrollToTop();
       return;
